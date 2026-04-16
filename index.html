@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mazer Admin – Customized Dashboard</title>
+   
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%236c63ff'/%3E%3Cstop offset='100%25' stop-color='%2300d4aa'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='20' fill='%23181c25'/%3E%3Ctext x='50%25' y='58%25' font-size='50' text-anchor='middle' fill='url(%23g)' font-family='Arial' font-weight='bold'%3EM%3C/text%3E%3C/svg%3E">
+  <!-- Bootstrap 5 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" />
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" />
+  <!-- Google Fonts: Syne + DM Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+  <!-- ApexCharts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.45.2/apexcharts.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #181c25;
+      --surface2: #1e2330;
+      --border: #252b3b;
+      --accent: #6c63ff;
+      --accent2: #00d4aa;
+      --accent3: #ff6b6b;
+      --accent4: #ffd166;
+      --text: #e8eaf0;
+      --muted: #6b7280;
+      --radius: 16px;
+      --sidebar-w: 260px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Sidebar ── */
+    #sidebar {
+      position: fixed;
+      top: 0; left: 0;
+      width: var(--sidebar-w);
+      height: 100vh;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+      transition: transform .3s ease;
+    }
+
+    .sidebar-brand {
+      padding: 28px 24px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sidebar-brand .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.5rem;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .sidebar-brand .tagline {
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 0;
+    }
+
+    .nav-section-label {
+      font-size: .65rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--muted);
+      padding: 16px 24px 6px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 24px;
+      color: var(--muted);
+      text-decoration: none;
+      border-radius: 0;
+      font-size: .875rem;
+      font-weight: 500;
+      transition: all .2s;
+      position: relative;
+    }
+
+    .nav-link:hover {
+      color: var(--text);
+      background: rgba(255,255,255,.04);
+    }
+
+    .nav-link.active {
+      color: var(--accent);
+      background: rgba(108, 99, 255, .12);
+    }
+
+    .nav-link.active::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: var(--accent);
+      border-radius: 0 4px 4px 0;
+    }
+
+    .nav-link i { font-size: 1.1rem; width: 20px; }
+
+    .sidebar-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    .user-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .avatar-wrap {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: .85rem;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .user-name { font-size: .875rem; font-weight: 600; }
+    .user-role { font-size: .72rem; color: var(--muted); }
+
+    /* ── Main ── */
+    #main {
+      margin-left: var(--sidebar-w);
+      min-height: 100vh;
+      padding: 0 32px 40px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 0 24px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 32px;
+    }
+
+    .page-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1.4rem;
+      letter-spacing: -.3px;
+    }
+
+    .page-subtitle { font-size: .82rem; color: var(--muted); margin-top: 2px; }
+
+    .topbar-actions { display: flex; align-items: center; gap: 12px; }
+
+    .btn-icon {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--muted);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: all .2s;
+      font-size: 1rem;
+    }
+    .btn-icon:hover { color: var(--text); border-color: var(--accent); }
+
+    .badge-dot {
+      position: relative;
+    }
+    .badge-dot::after {
+      content: '';
+      position: absolute;
+      top: 7px; right: 7px;
+      width: 7px; height: 7px;
+      background: var(--accent3);
+      border-radius: 50%;
+      border: 2px solid var(--surface2);
+    }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 18px 20px 4px;
+      background: transparent;
+      border-bottom: none;
+    }
+
+    .card-header h5 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .card-body { padding: 20px; }
+
+    /* ── Stat Cards ── */
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: transform .2s, box-shadow .2s;
+      animation: fadeUp .5s ease both;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 32px rgba(0,0,0,.3);
+    }
+
+    .stat-icon {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+
+    .si-purple { background: rgba(108,99,255,.15); color: var(--accent); }
+    .si-teal   { background: rgba(0,212,170,.15);  color: var(--accent2); }
+    .si-red    { background: rgba(255,107,107,.15); color: var(--accent3); }
+    .si-yellow { background: rgba(255,209,102,.15); color: var(--accent4); }
+
+    .stat-label { font-size: .78rem; color: var(--muted); font-weight: 500; margin-bottom: 4px; }
+    .stat-value {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1.5rem;
+    }
+    .stat-trend {
+      font-size: .72rem;
+      margin-top: 2px;
+      display: flex; align-items: center; gap: 3px;
+    }
+    .trend-up   { color: var(--accent2); }
+    .trend-down { color: var(--accent3); }
+
+    /* ── Section heading ── */
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .section-head h6 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: .95rem;
+    }
+    .badge-pill {
+      font-size: .7rem;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: rgba(108,99,255,.15);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* ── Recent Activity ── */
+    .activity-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      animation: fadeUp .5s ease both;
+    }
+    .activity-item:last-child { border-bottom: none; }
+
+    .act-avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: .8rem; color: #fff;
+    }
+
+    .act-name { font-size: .85rem; font-weight: 600; }
+    .act-comment { font-size: .8rem; color: var(--muted); margin-top: 2px; line-height: 1.4; }
+    .act-time { font-size: .7rem; color: var(--muted); margin-top: 3px; }
+
+    /* ── Region bars ── */
+    .region-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .region-label { font-size: .8rem; font-weight: 500; flex: 1; }
+    .region-count { font-size: .8rem; font-weight: 700; color: var(--text); min-width: 40px; text-align: right; margin-left: 8px; }
+    .region-bar-wrap { flex: 2; height: 6px; background: var(--border); border-radius: 4px; margin: 0 12px; }
+    .region-bar { height: 100%; border-radius: 4px; transition: width 1s ease; }
+
+    /* ── Messages ── */
+    .msg-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: opacity .2s;
+    }
+    .msg-item:hover { opacity: .8; }
+    .msg-item:last-child { border-bottom: none; }
+    .msg-ava {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: .82rem; color: #fff;
+      flex-shrink: 0;
+    }
+    .msg-name { font-size: .85rem; font-weight: 600; }
+    .msg-preview { font-size: .75rem; color: var(--muted); }
+    .msg-time { font-size: .68rem; color: var(--muted); text-align: right; min-width: 42px; }
+
+    .btn-start {
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid var(--accent);
+      background: transparent;
+      color: var(--accent);
+      font-family: 'DM Sans', sans-serif;
+      font-size: .85rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 12px;
+      transition: all .2s;
+    }
+    .btn-start:hover { background: var(--accent); color: #fff; }
+
+    /* ── Quick Stats bar ── */
+    .quick-stat {
+      text-align: center;
+      padding: 14px 0;
+    }
+    .quick-stat-val {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1.3rem;
+    }
+    .quick-stat-label { font-size: .72rem; color: var(--muted); margin-top: 2px; }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Dark mode toggle ── */
+    .toggle-wrap {
+      display: flex; align-items: center; gap: 6px;
+      font-size: .75rem; color: var(--muted);
+    }
+
+    .toggle-switch {
+      width: 32px; height: 18px;
+      background: var(--border);
+      border-radius: 9px;
+      position: relative;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .toggle-switch.on { background: var(--accent); }
+    .toggle-switch::after {
+      content: '';
+      width: 12px; height: 12px;
+      background: #fff;
+      border-radius: 50%;
+      position: absolute;
+      top: 3px; left: 3px;
+      transition: left .2s;
+    }
+    .toggle-switch.on::after { left: 17px; }
+
+    /* ── Responsive ── */
+    .burger { display: none; }
+
+    @media (max-width: 991px) {
+      #sidebar { transform: translateX(-100%); }
+      #sidebar.open { transform: translateX(0); }
+      #main { margin-left: 0; padding: 0 16px 40px; }
+      .burger { display: flex; }
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    /* Light theme override */
+    body.light {
+      --bg: #f4f6fb;
+      --surface: #ffffff;
+      --surface2: #f0f2f8;
+      --border: #e4e7ef;
+      --text: #1a1d2e;
+      --muted: #8b95a8;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<div id="sidebar">
+  <div class="sidebar-brand">
+    <div class="logo">⬡ Mazer</div>
+    <div class="tagline">Admin Dashboard</div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Main</div>
+    <a href="#" class="nav-link active"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a>
+    <a href="#" class="nav-link"><i class="bi bi-people-fill"></i> Users</a>
+    <a href="#" class="nav-link"><i class="bi bi-bar-chart-fill"></i> Analytics</a>
+    <a href="#" class="nav-link"><i class="bi bi-chat-dots-fill"></i> Messages</a>
+
+    <div class="nav-section-label">Content</div>
+    <a href="#" class="nav-link"><i class="bi bi-file-earmark-text-fill"></i> Posts</a>
+    <a href="#" class="nav-link"><i class="bi bi-images"></i> Media</a>
+    <a href="#" class="nav-link"><i class="bi bi-bookmark-fill"></i> Saved</a>
+
+    <div class="nav-section-label">System</div>
+    <a href="#" class="nav-link"><i class="bi bi-gear-fill"></i> Settings</a>
+    <a href="#" class="nav-link"><i class="bi bi-shield-lock-fill"></i> Security</a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="user-card">
+      <div class="avatar-wrap" id="userInitials">JD</div>
+      <div>
+        <div class="user-name" id="userName">John Duck</div>
+        <div class="user-role" id="userRole">@johnducky</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ MAIN ═══════════════ -->
+<div id="main">
+  <div class="topbar">
+    <div class="d-flex align-items-center gap-3">
+      <button class="btn-icon burger" onclick="toggleSidebar()"><i class="bi bi-list"></i></button>
+      <div>
+        <div class="page-title">Profile Statistics</div>
+        <div class="page-subtitle" id="currentDate">Loading…</div>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <div class="toggle-wrap">
+        <span>Dark</span>
+        <div class="toggle-switch on" id="themeToggle" onclick="toggleTheme()"></div>
+      </div>
+      <div class="btn-icon badge-dot"><i class="bi bi-bell"></i></div>
+      <div class="btn-icon"><i class="bi bi-search"></i></div>
+    </div>
+  </div>
+
+  <!-- ── Stat Cards ── -->
+  <div class="row g-3 mb-4" id="statCards"></div>
+
+  <!-- ── Chart + Region + Comments ── -->
+  <div class="row g-3 mb-4">
+    <!-- Main Chart -->
+    <div class="col-12 col-lg-8">
+      <div class="card h-100">
+        <div class="card-header">
+          <div class="section-head mb-0">
+            <h5>Profile Visits</h5>
+            <span class="badge-pill">Last 7 months</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div id="chart-profile-visit" style="min-height:240px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Region Breakdown -->
+    <div class="col-12 col-lg-4">
+      <div class="card h-100">
+        <div class="card-header">
+          <div class="section-head mb-0">
+            <h5>Visitors by Region</h5>
+          </div>
+        </div>
+        <div class="card-body" id="regionList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Comments + Messages + Donut ── -->
+  <div class="row g-3">
+    <!-- Comments Table -->
+    <div class="col-12 col-lg-5">
+      <div class="card h-100">
+        <div class="card-header">
+          <div class="section-head mb-0">
+            <h5>Latest Comments</h5>
+            <span class="badge-pill" id="commentCount">0 new</span>
+          </div>
+        </div>
+        <div class="card-body" id="commentList"></div>
+      </div>
+    </div>
+
+    <!-- Messages -->
+    <div class="col-12 col-lg-4">
+      <div class="card h-100">
+        <div class="card-header">
+          <div class="section-head mb-0">
+            <h5>Recent Messages</h5>
+          </div>
+        </div>
+        <div class="card-body">
+          <div id="messageList"></div>
+          <button class="btn-start">Start Conversation</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Donut Chart -->
+    <div class="col-12 col-lg-3">
+      <div class="card h-100">
+        <div class="card-header">
+          <div class="section-head mb-0">
+            <h5>Audience</h5>
+          </div>
+        </div>
+        <div class="card-body">
+          <div id="chart-visitors-profile" style="min-height:200px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ SCRIPTS ═══════════════ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  let dashboardData = {};
+/* ══════════════════════════════════
+   DATA.JSON  — all dashboard data
+   (simulated inline as a JS object)
+══════════════════════════════════ */
+
+/* ══════════════ RENDER FUNCTIONS ══════════════ */
+
+function initDate() {
+  const d = new Date();
+  document.getElementById('currentDate').textContent =
+    d.toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+}
+
+function initUser() {
+  document.getElementById('userName').textContent = dashboardData.user.name;
+  document.getElementById('userRole').textContent = dashboardData.user.handle;
+  document.getElementById('userInitials').textContent = dashboardData.user.initials;
+}
+
+function initStats() {
+  const container = document.getElementById('statCards');
+  dashboardData.stats.forEach((s, i) => {
+    const col = document.createElement('div');
+    col.className = 'col-6 col-lg-3';
+    col.innerHTML = `
+      <div class="stat-card" style="animation-delay:${i * .08}s">
+        <div class="stat-icon ${s.color}">
+          <i class="bi ${s.icon}"></i>
+        </div>
+        <div>
+          <div class="stat-label">${s.label}</div>
+          <div class="stat-value">${s.value}</div>
+          <div class="stat-trend ${s.up ? 'trend-up' : 'trend-down'}">
+            <i class="bi ${s.up ? 'bi-arrow-up-short' : 'bi-arrow-down-short'}"></i> ${s.trend} this month
+          </div>
+        </div>
+      </div>`;
+    container.appendChild(col);
+  });
+}
+
+function initVisitChart() {
+  const isDark = !document.body.classList.contains('light');
+  const options = {
+    series: [{ name: "Visits", data: dashboardData.visitChart.data }],
+    chart: { type: 'area', height: 240, toolbar: { show: false }, background: 'transparent' },
+    dataLabels: { enabled: false },
+    stroke: { curve: 'smooth', width: 2 },
+    fill: {
+      type: 'gradient',
+      gradient: { shadeIntensity: 1, opacityFrom: .4, opacityTo: .01, stops: [0,100] }
+    },
+    colors: ['#6c63ff'],
+    xaxis: {
+      categories: dashboardData.visitChart.months,
+      labels: { style: { colors: '#6b7280', fontSize: '12px' } },
+      axisBorder: { show: false }, axisTicks: { show: false }
+    },
+    yaxis: { labels: { style: { colors: '#6b7280', fontSize: '12px' } } },
+    grid: { borderColor: isDark ? '#252b3b' : '#e4e7ef', strokeDashArray: 4 },
+    tooltip: { theme: isDark ? 'dark' : 'light' }
+  };
+  const chart = new ApexCharts(document.querySelector("#chart-profile-visit"), options);
+  chart.render();
+  window._visitChart = chart;
+}
+
+function initRegions() {
+  const container = document.getElementById('regionList');
+  const max = Math.max(...dashboardData.regions.map(r => r.count));
+  dashboardData.regions.forEach(r => {
+    const pct = Math.round((r.count / max) * 100);
+    container.innerHTML += `
+      <div class="region-row">
+        <div class="region-label">${r.name}</div>
+        <div class="region-bar-wrap">
+          <div class="region-bar" style="width:${pct}%; background:${r.color};"></div>
+        </div>
+        <div class="region-count">${r.count}</div>
+      </div>`;
+  });
+}
+
+function initComments() {
+  const container = document.getElementById('commentList');
+  document.getElementById('commentCount').textContent = `${dashboardData.comments.length} new`;
+  dashboardData.comments.forEach((c, i) => {
+    const init = c.name.split(' ').map(w=>w[0]).join('').slice(0,2);
+    container.innerHTML += `
+      <div class="activity-item" style="animation-delay:${i*.1}s">
+        <div class="act-avatar" style="background:${c.color}">${init}</div>
+        <div style="flex:1;">
+          <div class="act-name">${c.name} <span style="font-weight:400;color:var(--muted);font-size:.75rem;">${c.handle}</span></div>
+          <div class="act-comment">${c.text}</div>
+          <div class="act-time"><i class="bi bi-clock"></i> ${c.time}</div>
+        </div>
+      </div>`;
+  });
+}
+
+function initMessages() {
+  const container = document.getElementById('messageList');
+  dashboardData.messages.forEach(m => {
+    const init = m.name.split(' ').map(w=>w[0]).join('').slice(0,2);
+    container.innerHTML += `
+      <div class="msg-item">
+        <div class="msg-ava" style="background:${m.color}">${init}</div>
+        <div style="flex:1;min-width:0;">
+          <div class="msg-name">${m.name}</div>
+          <div class="msg-preview">${m.preview}</div>
+        </div>
+        <div class="msg-time">${m.time}</div>
+      </div>`;
+  });
+}
+
+function initDonut() {
+  const isDark = !document.body.classList.contains('light');
+  const options = {
+    series: dashboardData.audience.data,
+    labels: dashboardData.audience.labels,
+    chart: { type: 'donut', height: 200, background: 'transparent' },
+    colors: ['#6c63ff', '#00d4aa', '#ffd166'],
+    legend: { position: 'bottom', labels: { colors: '#6b7280' } },
+    dataLabels: { enabled: false },
+    plotOptions: { pie: { donut: { size: '65%' } } },
+    tooltip: { theme: isDark ? 'dark' : 'light' }
+  };
+  const chart = new ApexCharts(document.querySelector("#chart-visitors-profile"), options);
+  chart.render();
+  window._donutChart = chart;
+}
+
+/* ══════════════ UTILS ══════════════ */
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+let dark = true;
+function toggleTheme() {
+  dark = !dark;
+  document.body.classList.toggle('light', !dark);
+  document.getElementById('themeToggle').classList.toggle('on', dark);
+
+  // Re-render charts to match theme
+  if (window._visitChart) { window._visitChart.destroy(); initVisitChart(); }
+  if (window._donutChart) { window._donutChart.destroy(); initDonut(); }
+}
+
+/* ══════════════ INIT ══════════════ */
+function initAll() {
+  initDate();
+  initUser();
+  initStats();
+  initVisitChart();
+  initRegions();
+  initComments();
+  initMessages();
+  initDonut();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  fetch('data.json')
+    .then(response => response.json())
+    .then(data => {
+      dashboardData = data;
+      initAll();
+    })
+    .catch(error => {
+      console.error("Error loading data.json:", error);
+    });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+{
+  "user": {
+    "name": "John Duck",
+    "handle": "@johnducky",
+    "initials": "JD"
+  },
+  "stats": [
+    { "label": "Profile Views", "value": "112,450", "trend": "+8.2%", "up": true,  "icon": "bi-eye-fill",        "color": "si-purple" },
+    { "label": "Followers",     "value": "183,920", "trend": "+5.4%", "up": true,  "icon": "bi-people-fill",     "color": "si-teal"   },
+    { "label": "Following",     "value": "80,310",  "trend": "-1.2%", "up": false, "icon": "bi-person-plus-fill","color": "si-yellow" },
+    { "label": "Saved Posts",   "value": "1,124",   "trend": "+12.7%","up": true,  "icon": "bi-bookmark-fill",   "color": "si-red"    }
+  ],
+  "visitChart": {
+    "months": ["Oct","Nov","Dec","Jan","Feb","Mar","Apr"],
+    "data": [820, 940, 1100, 890, 1250, 1380, 1600]
+  },
+  "regions": [
+    { "name": "Indonesia", "count": 1025, "color": "#6c63ff" },
+    { "name": "Europe",    "count": 862,  "color": "#00d4aa" },
+    { "name": "India",     "count": 625,  "color": "#ffd166" },
+    { "name": "America",   "count": 375,  "color": "#ff6b6b" }
+  ],
+  "comments": [
+    { "name": "Si Cantik",    "handle": "@sicantik",    "text": "Congratulations on your graduation!",                              "time": "2 min ago",  "color": "#6c63ff" },
+    { "name": "Si Ganteng",   "handle": "@siganteng",   "text": "Wow amazing design! Can you make another tutorial for this?",      "time": "15 min ago", "color": "#00d4aa" },
+    { "name": "Singh Eknoor", "handle": "@eknoor",      "text": "What a stunning design! You are so talented and creative!",        "time": "1 hr ago",   "color": "#ff6b6b" },
+    { "name": "Rani Jhadav",  "handle": "@rani",        "text": "I love your design! It's so beautiful and unique!",               "time": "3 hrs ago",  "color": "#ffd166" }
+  ],
+  "messages": [
+    { "name": "Hank Schrader",   "handle": "@hankschrader", "preview": "Hey, great work on the project!",      "time": "5m",  "color": "#6c63ff" },
+    { "name": "Dean Winchester", "handle": "@imdean",        "preview": "Can you share the design files?",     "time": "22m", "color": "#00d4aa" },
+    { "name": "John Dodol",      "handle": "@dodoljohn",     "preview": "Thanks for following me back!",       "time": "1h",  "color": "#ff6b6b" }
+  ],
+  "audience": {
+    "labels": ["Male", "Female", "Other"],
+    "data": [53, 41, 6]
+  }
+}
