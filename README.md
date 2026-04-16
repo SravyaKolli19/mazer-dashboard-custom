@@ -90,7 +90,19 @@ npx serve .
 | Google Fonts | – | Syne + DM Sans typography |
 
 ---
+## 🌐 Live Preview
 
+👉 github live link :
+```
+https://github.com/SravyaKolli19/mazer-dashboard-custom
+```
+and  
+👉 netlify live link :
+```
+https://customizedadmindashboard.netlify.app/
+---
+
+---
 ## Key Changes vs Original Mazer
 
 1. **Merged Nunjucks templates** into a single self-contained `.html` — no build pipeline needed.
