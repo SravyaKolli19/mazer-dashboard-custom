@@ -73,10 +73,9 @@ This is a **standalone HTML file** — no build step required.
 # Option 1: Just open in browser
 open index.html
 
-# Option 2: Serve locally (recommended to avoid CORS on fetch)
+# Option 2: Serve locally 
 npx serve .
-# or
-python3 -m http.server 8080
+
 ```
 
 ---
